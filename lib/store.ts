@@ -1,0 +1,129 @@
+import { create } from "zustand";
+
+interface FolderSettings {
+  inputFolder: string;
+  outputFolder: string;
+  databasePath: string;
+}
+
+type ServiceStatus = "stopped" | "running" | "installing" | "error";
+
+interface FolderStore extends FolderSettings {
+  serviceStatus: ServiceStatus;
+  externalApiUrl: string;
+  setExternalApiUrl: (url: string) => void;
+  setInputFolder: (path: string) => void;
+  setOutputFolder: (path: string) => void;
+  setDatabasePath: (path: string) => void;
+  saveSettings: () => boolean;
+  startService: () => Promise<void>;
+  stopService: () => Promise<void>;
+  installService: () => Promise<void>;
+  restartService: () => Promise<void>;
+}
+
+export const useFolderStore = create<FolderStore>()((set, get) => ({
+  inputFolder: "",
+  outputFolder: "",
+  databasePath: "",
+  serviceStatus: "stopped",
+  externalApiUrl:
+    process.env.NEXT_PUBLIC_EXTERNAL_API_URL || "http://localhost:8000",
+  setExternalApiUrl: (url) => set({ externalApiUrl: url }),
+  setInputFolder: (path) => set({ inputFolder: path }),
+  setOutputFolder: (path) => set({ outputFolder: path }),
+  setDatabasePath: (path) => set({ databasePath: path }),
+  saveSettings: () => {
+    const { inputFolder, outputFolder, databasePath } = get();
+    if (!inputFolder || !outputFolder || !databasePath) {
+      return false;
+    }
+    return true;
+  },
+  startService: async () => {
+    const { externalApiUrl, inputFolder, outputFolder, databasePath } = get();
+    try {
+      set({ serviceStatus: "running" });
+      const response = await fetch(`${externalApiUrl}/service/start`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ inputFolder, outputFolder, databasePath }),
+      });
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        set({ serviceStatus: "running" });
+      } else {
+        set({ serviceStatus: "error" });
+        throw new Error(data.message || "Erreur lors du démarrage");
+      }
+    } catch (error) {
+      set({ serviceStatus: "error" });
+      throw error;
+    }
+  },
+  stopService: async () => {
+    const { externalApiUrl } = get();
+    try {
+      const response = await fetch(`${externalApiUrl}/service/stop`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        set({ serviceStatus: "stopped" });
+      } else {
+        set({ serviceStatus: "error" });
+        throw new Error(data.message || "Erreur lors de l'arrêt");
+      }
+    } catch (error) {
+      set({ serviceStatus: "error" });
+      throw error;
+    }
+  },
+  installService: async () => {
+    const { externalApiUrl, inputFolder, outputFolder, databasePath } = get();
+    try {
+      set({ serviceStatus: "installing" });
+      const response = await fetch(`${externalApiUrl}/service/install`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ inputFolder, outputFolder, databasePath }),
+      });
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        set({ serviceStatus: "stopped" });
+      } else {
+        set({ serviceStatus: "error" });
+        throw new Error(data.message || "Erreur lors de l'installation");
+      }
+    } catch (error) {
+      set({ serviceStatus: "error" });
+      throw error;
+    }
+  },
+  restartService: async () => {
+    const { externalApiUrl, inputFolder, outputFolder, databasePath } = get();
+    try {
+      set({ serviceStatus: "stopped" });
+      const response = await fetch(`${externalApiUrl}/service/restart`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ inputFolder, outputFolder, databasePath }),
+      });
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        set({ serviceStatus: "running" });
+      } else {
+        set({ serviceStatus: "error" });
+        throw new Error(data.message || "Erreur lors du redémarrage");
+      }
+    } catch (error) {
+      set({ serviceStatus: "error" });
+      throw error;
+    }
+  },
+}));

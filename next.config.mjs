@@ -18,12 +18,12 @@ const nextConfig = {
   reactStrictMode: true,
 
   // Webpack configuration for Electron
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.target = "electron-renderer";
-    }
-    return config;
-  },
+  // webpack: (config, { isServer }) => {
+  //   if (!isServer) {
+  //     config.target = "electron-renderer";
+  //   }
+  //   return config;
+  // },
 };
 
 export default nextConfig; // ES Module syntax

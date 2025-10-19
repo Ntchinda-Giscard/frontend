@@ -36,7 +36,7 @@ export default function FolderPickerPage() {
         title: "Erreur de validation",
         description:
           "Veuillez remplir tous les chemins de dossiers avant d'enregistrer.",
-        // variant: "destructive",
+        variant: "destructive",
       });
       return;
     }

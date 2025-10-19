@@ -77,7 +77,7 @@ export function ServiceControls() {
 
   const handleRestart = async () => {
     try {
-      // await restartService();
+      await restartService();
       toast({
         title: "Service redémarré",
         description: "Le service a été redémarré avec succès.",

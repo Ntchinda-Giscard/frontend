@@ -3,7 +3,6 @@ import { create } from "zustand";
 interface FolderSettings {
   inputFolder: string;
   outputFolder: string;
-  databasePath: string;
 }
 
 type ServiceStatus = "stopped" | "running" | "installing" | "error";
@@ -14,7 +13,6 @@ interface FolderStore extends FolderSettings {
   setExternalApiUrl: (url: string) => void;
   setInputFolder: (path: string) => void;
   setOutputFolder: (path: string) => void;
-  setDatabasePath: (path: string) => void;
   saveSettings: () => boolean;
   startService: () => Promise<void>;
   stopService: () => Promise<void>;
@@ -25,29 +23,27 @@ interface FolderStore extends FolderSettings {
 export const useFolderStore = create<FolderStore>()((set, get) => ({
   inputFolder: "",
   outputFolder: "",
-  databasePath: "",
   serviceStatus: "stopped",
   externalApiUrl:
     process.env.NEXT_PUBLIC_EXTERNAL_API_URL || "http://localhost:8000",
   setExternalApiUrl: (url) => set({ externalApiUrl: url }),
   setInputFolder: (path) => set({ inputFolder: path }),
   setOutputFolder: (path) => set({ outputFolder: path }),
-  setDatabasePath: (path) => set({ databasePath: path }),
   saveSettings: () => {
-    const { inputFolder, outputFolder, databasePath } = get();
-    if (!inputFolder || !outputFolder || !databasePath) {
+    const { inputFolder, outputFolder } = get();
+    if (!inputFolder || !outputFolder) {
       return false;
     }
     return true;
   },
   startService: async () => {
-    const { externalApiUrl, inputFolder, outputFolder, databasePath } = get();
+    const { externalApiUrl, inputFolder, outputFolder } = get();
     try {
       set({ serviceStatus: "running" });
       const response = await fetch(`${externalApiUrl}/service/start`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inputFolder, outputFolder, databasePath }),
+        body: JSON.stringify({ inputFolder, outputFolder }),
       });
       const data = await response.json();
 
@@ -83,13 +79,13 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
     }
   },
   installService: async () => {
-    const { externalApiUrl, inputFolder, outputFolder, databasePath } = get();
+    const { externalApiUrl, inputFolder, outputFolder } = get();
     try {
       set({ serviceStatus: "installing" });
       const response = await fetch(`${externalApiUrl}/service/install`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inputFolder, outputFolder, databasePath }),
+        body: JSON.stringify({ inputFolder, outputFolder }),
       });
       const data = await response.json();
 
@@ -105,13 +101,13 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
     }
   },
   restartService: async () => {
-    const { externalApiUrl, inputFolder, outputFolder, databasePath } = get();
+    const { externalApiUrl, inputFolder, outputFolder } = get();
     try {
       set({ serviceStatus: "stopped" });
       const response = await fetch(`${externalApiUrl}/service/restart`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inputFolder, outputFolder, databasePath }),
+        body: JSON.stringify({ inputFolder, outputFolder }),
       });
       const data = await response.json();
 

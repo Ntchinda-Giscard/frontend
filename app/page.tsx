@@ -19,10 +19,8 @@ export default function FolderPickerPage() {
   const {
     inputFolder,
     outputFolder,
-    databasePath,
     setInputFolder,
     setOutputFolder,
-    setDatabasePath,
     saveSettings,
   } = useFolderStore();
 

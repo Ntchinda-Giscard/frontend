@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Database, FolderInput, FolderOutput, Save } from "lucide-react";
 import { useFolderStore } from "@/lib/store";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DatabaseConnectionForm } from "@/components/database-connection";
 
 export default function FolderPickerPage() {
   const {
@@ -60,45 +62,55 @@ export default function FolderPickerPage() {
 
         <div className="space-y-4">
           <ServiceControls />
+          <Tabs defaultValue="account" className="w-[400px]">
+            <TabsList>
+              <TabsTrigger value="account">Account</TabsTrigger>
+              <TabsTrigger value="password">Password</TabsTrigger>
+            </TabsList>
+            <TabsContent value="account">
+              <DatabaseConnectionForm />
+            </TabsContent>
+            <TabsContent value="password">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FolderInput className="h-5 w-5" />
+                    Dossier principal (Avant traitement)
+                  </CardTitle>
+                  <CardDescription>
+                    Sélectionnez le dossier contenant les fichiers à traiter
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <FolderPicker
+                    value={inputFolder}
+                    onChange={setInputFolder}
+                    placeholder="Sélectionner le dossier d'entrée..."
+                  />
+                </CardContent>
+              </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FolderInput className="h-5 w-5" />
-                Dossier principal (Avant traitement)
-              </CardTitle>
-              <CardDescription>
-                Sélectionnez le dossier contenant les fichiers à traiter
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <FolderPicker
-                value={inputFolder}
-                onChange={setInputFolder}
-                placeholder="Sélectionner le dossier d'entrée..."
-              />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FolderOutput className="h-5 w-5" />
-                Dossier de sortie (Après traitement)
-              </CardTitle>
-              <CardDescription>
-                Sélectionnez le dossier où les fichiers traités seront
-                enregistrés
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <FolderPicker
-                value={outputFolder}
-                onChange={setOutputFolder}
-                placeholder="Sélectionner le dossier de sortie..."
-              />
-            </CardContent>
-          </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FolderOutput className="h-5 w-5" />
+                    Dossier de sortie (Après traitement)
+                  </CardTitle>
+                  <CardDescription>
+                    Sélectionnez le dossier où les fichiers traités seront
+                    enregistrés
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <FolderPicker
+                    value={outputFolder}
+                    onChange={setOutputFolder}
+                    placeholder="Sélectionner le dossier de sortie..."
+                  />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
 
           <div className="flex justify-end">
             <Button onClick={handleSaveSettings} size="lg">

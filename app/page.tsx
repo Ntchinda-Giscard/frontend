@@ -62,7 +62,7 @@ export default function FolderPickerPage() {
 
         <div className="space-y-4">
           <ServiceControls />
-          <Tabs defaultValue="account" className="w-full">
+          <Tabs defaultValue="account" className="w-full space-y-4">
             <TabsList>
               <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="password">Password</TabsTrigger>

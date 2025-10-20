@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Database } from "lucide-react";
 
 export function DatabaseConnectionForm() {
   const {
@@ -53,9 +54,12 @@ export function DatabaseConnectionForm() {
   };
 
   return (
-    <Card className="w-full max-w-2xl">
+    <Card className="w-full">
       <CardHeader>
-        <CardTitle>Connexion à la base de données</CardTitle>
+        <CardTitle>
+          {" "}
+          <Database className="h-5 w-5" /> Connexion à la base de données
+        </CardTitle>
         <CardDescription>
           Configurez les paramètres de connexion à votre base de données
         </CardDescription>

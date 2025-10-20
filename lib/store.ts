@@ -25,7 +25,7 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
   outputFolder: "",
   serviceStatus: "stopped",
   externalApiUrl:
-    process.env.NEXT_PUBLIC_EXTERNAL_API_URL || "http://localhost:8000",
+    process.env.NEXT_PUBLIC_EXTERNAL_API_URL || "http://localhost:5000",
   setExternalApiUrl: (url) => set({ externalApiUrl: url }),
   setInputFolder: (path) => set({ inputFolder: path }),
   setOutputFolder: (path) => set({ outputFolder: path }),

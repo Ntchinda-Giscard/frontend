@@ -46,8 +46,10 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
         }),
       });
       const data = await response.json();
+      console.log("data", data);
+      console.log("response", response);
 
-      if (response.ok && data.success) {
+      if (response.ok && data) {
         set({ serviceStatus: "running" });
       } else {
         set({ serviceStatus: "error" });
@@ -71,8 +73,10 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
         }),
       });
       const data = await response.json();
+      console.log("data", data);
+      console.log("response", response);
 
-      if (response.ok && data.success) {
+      if (response.ok && data) {
         set({ serviceStatus: "running" });
       } else {
         set({ serviceStatus: "error" });
@@ -92,7 +96,7 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
       });
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      if (response.ok && data) {
         set({ serviceStatus: "stopped" });
       } else {
         set({ serviceStatus: "error" });
@@ -117,7 +121,7 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
       });
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      if (response.ok && data) {
         set({ serviceStatus: "stopped" });
       } else {
         set({ serviceStatus: "error" });
@@ -142,7 +146,7 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
       });
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      if (response.ok && data) {
         set({ serviceStatus: "running" });
       } else {
         set({ serviceStatus: "error" });

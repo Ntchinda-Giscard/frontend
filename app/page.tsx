@@ -28,24 +28,26 @@ export default function FolderPickerPage() {
 
   const { toast } = useToast();
 
-  const handleSaveSettings = () => {
-    const success = saveSettings();
+  const handleSaveSettings = async () => {
+    try {
+      await saveSettings();
+      toast({
+        title: "Paramètres enregistrés",
+        description:
+          "Votre configuration de dossiers a été enregistrée avec succès.",
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Veuillez remplir tous les chemins de dossiers avant d'enregistrer.";
 
-    if (!success) {
       toast({
         title: "Erreur de validation",
-        description:
-          "Veuillez remplir tous les chemins de dossiers avant d'enregistrer.",
+        description: errorMessage,
         variant: "destructive",
       });
-      return;
     }
-
-    toast({
-      title: "Paramètres enregistrés",
-      description:
-        "Votre configuration de dossiers a été enregistrée avec succès.",
-    });
   };
 
   return (
@@ -109,15 +111,15 @@ export default function FolderPickerPage() {
                   />
                 </CardContent>
               </Card>
+
+              <div className="flex justify-end">
+                <Button onClick={handleSaveSettings} size="lg">
+                  <Save className="mr-2 h-4 w-4" />
+                  Enregistrer la configuration
+                </Button>
+              </div>
             </TabsContent>
           </Tabs>
-
-          <div className="flex justify-end">
-            <Button onClick={handleSaveSettings} size="lg">
-              <Save className="mr-2 h-4 w-4" />
-              Enregistrer la configuration
-            </Button>
-          </div>
         </div>
       </div>
       <Toaster />

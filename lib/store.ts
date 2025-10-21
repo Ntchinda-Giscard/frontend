@@ -48,13 +48,6 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
       const data = await response.json();
       console.log("data", data);
       console.log("response", response);
-
-      if (response.ok && data) {
-        set({ serviceStatus: "running" });
-      } else {
-        set({ serviceStatus: "error" });
-        throw new Error(data.message || "Erreur lors du démarrage");
-      }
     } catch (error) {
       console.error("Error saving settings:", error);
       throw error;
@@ -67,10 +60,6 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
       const response = await fetch(`${externalApiUrl}/service/start`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          source: inputFolder,
-          destination: outputFolder,
-        }),
       });
       const data = await response.json();
       console.log("data", data);
@@ -114,10 +103,6 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
       const response = await fetch(`${externalApiUrl}/service/install`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          source: inputFolder,
-          destination: outputFolder,
-        }),
       });
       const data = await response.json();
 
@@ -139,10 +124,6 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
       const response = await fetch(`${externalApiUrl}/service/restart`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          source: inputFolder,
-          destination: outputFolder,
-        }),
       });
       const data = await response.json();
 

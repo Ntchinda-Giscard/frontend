@@ -71,7 +71,7 @@ export default function FolderPickerPage() {
               <DatabaseConnectionForm />
             </TabsContent>
             <TabsContent value="password">
-              <Card>
+              <Card className="mb-4">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <FolderInput className="h-5 w-5" />

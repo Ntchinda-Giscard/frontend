@@ -56,7 +56,7 @@ export function DatabaseConnectionForm() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>
+        <CardTitle className="flex items-center gap-2">
           {" "}
           <Database className="h-5 w-5" /> Connexion à la base de données
         </CardTitle>

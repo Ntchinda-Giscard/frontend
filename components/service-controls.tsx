@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Play, Square, Download, RotateCw, Activity } from "lucide-react";
 import { useFolderStore } from "@/lib/store";
 import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 export function ServiceControls() {
   const {
@@ -20,8 +21,16 @@ export function ServiceControls() {
     stopService,
     installService,
     restartService,
+    getServiceStatus,
   } = useFolderStore();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      await getServiceStatus();
+    };
+    fetchStatus();
+  }, []);
 
   const handleStart = async () => {
     try {
@@ -31,9 +40,13 @@ export function ServiceControls() {
         description: "Le service de traitement a été démarré avec succès.",
       });
     } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Une erreur inconnue s'est produite.";
       toast({
         title: "Erreur",
-        description: "Impossible de démarrer le service.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -47,9 +60,13 @@ export function ServiceControls() {
         description: "Le service de traitement a été arrêté.",
       });
     } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Une erreur inconnue s'est produite.";
       toast({
         title: "Erreur",
-        description: "Impossible d'arrêter le service.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -67,9 +84,13 @@ export function ServiceControls() {
         description: "Le service a été installé avec succès.",
       });
     } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Une erreur inconnue s'est produite.";
       toast({
         title: "Erreur",
-        description: "Impossible d'installer le service.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -83,9 +104,13 @@ export function ServiceControls() {
         description: "Le service a été redémarré avec succès.",
       });
     } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Une erreur inconnue s'est produite.";
       toast({
         title: "Erreur",
-        description: "Impossible de redémarrer le service.",
+        description: errorMessage,
         variant: "destructive",
       });
     }

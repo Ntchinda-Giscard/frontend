@@ -18,6 +18,7 @@ interface FolderStore extends FolderSettings {
   stopService: () => Promise<void>;
   installService: () => Promise<void>;
   restartService: () => Promise<void>;
+  getServiceStatus: () => Promise<void>;
 }
 
 export const useFolderStore = create<FolderStore>()((set, get) => ({
@@ -25,7 +26,7 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
   outputFolder: "",
   serviceStatus: "stopped",
   externalApiUrl:
-    process.env.NEXT_PUBLIC_EXTERNAL_API_URL || "http://localhost:5000",
+    process.env.NEXT_PUBLIC_EXTERNAL_API_URL || "http://127.0.0.1:5000",
   setExternalApiUrl: (url) => set({ externalApiUrl: url }),
   setInputFolder: (path) => set({ inputFolder: path }),
   setOutputFolder: (path) => set({ outputFolder: path }),
@@ -44,6 +45,22 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
           source: inputFolder,
           destination: outputFolder,
         }),
+      });
+      const data = await response.json();
+      console.log("data", data);
+      console.log("response", response);
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      throw error;
+    }
+  },
+  getServiceStatus: async () => {
+    const { externalApiUrl } = get();
+
+    try {
+      const response = await fetch(`${externalApiUrl}/service/status`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       });
       const data = await response.json();
       console.log("data", data);

@@ -64,15 +64,14 @@ export default function FolderPickerPage() {
 
         <div className="space-y-4">
           <ServiceControls />
-          <Tabs defaultValue="account" className="w-full space-y-4">
+          <Tabs defaultValue="dossier" className="w-full space-y-4">
             <TabsList>
-              <TabsTrigger value="account">Account</TabsTrigger>
-              <TabsTrigger value="password">Password</TabsTrigger>
+              <TabsTrigger value="database"> Base de donnée</TabsTrigger>
+              <TabsTrigger value="dossier"> Dossier </TabsTrigger>
+              <TabsTrigger value="email">Configuration SMTP</TabsTrigger>
             </TabsList>
-            <TabsContent value="account">
-              <DatabaseConnectionForm />
-            </TabsContent>
-            <TabsContent value="password">
+
+            <TabsContent value="dossier">
               <Card className="mb-4">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -118,6 +117,9 @@ export default function FolderPickerPage() {
                   Enregistrer la configuration
                 </Button>
               </div>
+            </TabsContent>
+            <TabsContent value="database">
+              <DatabaseConnectionForm />
             </TabsContent>
           </Tabs>
         </div>

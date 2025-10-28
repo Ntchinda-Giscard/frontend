@@ -65,6 +65,12 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
       const data = await response.json();
       console.log("data", data);
       console.log("response", response);
+      if (response.ok && data) {
+        set({ serviceStatus: "running" });
+      } else {
+        set({ serviceStatus: "error" });
+        throw new Error(data.detail || "Erreur lors du démarrage");
+      }
     } catch (error) {
       console.error("Error saving settings:", error);
       throw error;
@@ -86,10 +92,11 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
         set({ serviceStatus: "running" });
       } else {
         set({ serviceStatus: "error" });
-        throw new Error(data.message || "Erreur lors du démarrage");
+        throw new Error(data.detail || "Erreur lors du démarrage");
       }
     } catch (error) {
       set({ serviceStatus: "error" });
+      console.error("Error starting service:", error);
       throw error;
     }
   },
@@ -106,7 +113,7 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
         set({ serviceStatus: "stopped" });
       } else {
         set({ serviceStatus: "error" });
-        throw new Error(data.message || "Erreur lors de l'arrêt");
+        throw new Error(data.detail || "Erreur lors de l'arrêt");
       }
     } catch (error) {
       set({ serviceStatus: "error" });
@@ -127,7 +134,7 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
         set({ serviceStatus: "stopped" });
       } else {
         set({ serviceStatus: "error" });
-        throw new Error(data.message || "Erreur lors de l'installation");
+        throw new Error(data.detail || "Erreur lors de l'installation");
       }
     } catch (error) {
       set({ serviceStatus: "error" });
@@ -148,7 +155,7 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
         set({ serviceStatus: "running" });
       } else {
         set({ serviceStatus: "error" });
-        throw new Error(data.message || "Erreur lors du redémarrage");
+        throw new Error(data.detail || "Erreur lors du redémarrage");
       }
     } catch (error) {
       set({ serviceStatus: "error" });

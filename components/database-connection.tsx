@@ -195,7 +195,7 @@ export function DatabaseConnectionForm() {
           </div>
         )}
 
-        <Button onClick={handleSave} className="w-full">
+        <Button onClick={handleSave} className="w-full mt-4">
           Enregistrer la connexion
         </Button>
       </CardContent>

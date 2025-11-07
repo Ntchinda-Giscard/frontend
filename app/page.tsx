@@ -112,7 +112,7 @@ export default function FolderPickerPage() {
               </Card>
 
               <div className="flex justify-end">
-                <Button onClick={handleSaveSettings} size="lg">
+                <Button onClick={handleSaveSettings} size="lg" className="mt-4">
                   <Save className="mr-2 h-4 w-4" />
                   Enregistrer la configuration
                 </Button>

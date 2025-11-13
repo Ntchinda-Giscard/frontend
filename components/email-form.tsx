@@ -1,5 +1,5 @@
 import { Checkbox } from "@radix-ui/react-checkbox";
-import { Mail } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
@@ -85,7 +85,7 @@ export default function EmailForm() {
                     setEmailConfig({ useSSL: checked as boolean })
                   }
                 />
-                <Label htmlFor="ssl" className="text-gray-300">
+                <Label htmlFor="ssl" className="">
                   Utiliser SSL
                 </Label>
               </div>
@@ -97,7 +97,7 @@ export default function EmailForm() {
                     setEmailConfig({ useTLS: checked as boolean })
                   }
                 />
-                <Label htmlFor="tls" className="text-gray-300">
+                <Label htmlFor="tls" className="">
                   Utiliser TLS
                 </Label>
               </div>
@@ -106,12 +106,20 @@ export default function EmailForm() {
 
           <Button
             disabled={isLoading}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="w-full mt-4"
             onClick={() => {
               setEmailConfig({ ...emailConfig });
               saveSMTPConfig(emailConfig);
             }}
           >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Enregistrement...
+              </>
+            ) : (
+              "Enregistrer la connexion"
+            )}
             Sauvegarder
           </Button>
         </CardContent>

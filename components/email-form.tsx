@@ -1,4 +1,4 @@
-import { Checkbox } from "@radix-ui/react-checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Mail } from "lucide-react";
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
@@ -27,7 +27,7 @@ export default function EmailForm() {
               <Input
                 value={emailConfig.smtpServer}
                 onChange={(e) => setEmailConfig({ smtpServer: e.target.value })}
-                className="bg-gray-800 border-gray-700 text-white"
+                className=""
                 placeholder="smtp.gmail.com"
               />
             </div>
@@ -41,7 +41,7 @@ export default function EmailForm() {
                     smtpPort: Number.parseInt(e.target.value) || 587,
                   })
                 }
-                className="bg-gray-800 border-gray-700 text-white"
+                className=""
                 placeholder="587"
               />
             </div>
@@ -56,7 +56,7 @@ export default function EmailForm() {
                 onChange={(e) =>
                   setEmailConfig({ senderEmail: e.target.value })
                 }
-                className="bg-gray-800 border-gray-700 text-white"
+                className=""
                 placeholder="noreply@company.com"
               />
             </div>
@@ -68,7 +68,7 @@ export default function EmailForm() {
                 onChange={(e) =>
                   setEmailConfig({ senderPassword: e.target.value })
                 }
-                className="bg-gray-800 border-gray-700 text-white"
+                className=""
                 placeholder="••••••••"
               />
             </div>
@@ -106,7 +106,7 @@ export default function EmailForm() {
 
           <Button
             disabled={isLoading}
-            className="w-full mt-4"
+            className="mt-4"
             onClick={() => {
               setEmailConfig({ ...emailConfig });
               saveSMTPConfig(emailConfig);
@@ -118,9 +118,8 @@ export default function EmailForm() {
                 Enregistrement...
               </>
             ) : (
-              "Enregistrer la connexion"
+              "Sauvegarder"
             )}
-            Sauvegarder
           </Button>
         </CardContent>
       </Card>

@@ -39,7 +39,7 @@ export const useSMTPStore = create<AppState>((set, get) => ({
   saveSMTPConfig: async (config) => {
     const { externalApiUrl } = get();
     try {
-      const response = await fetch(`${externalApiUrl}/smtp/add`, {
+      const response = await fetch(`${externalApiUrl}/email/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

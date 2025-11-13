@@ -13,9 +13,9 @@ export default function EmailForm() {
   const [isLoading, setIsLoading] = useState(false);
   return (
     <div>
-      <Card className="bg-gray-900 border-gray-800">
+      <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-white flex items-center">
+          <CardTitle className="flex items-center gap-2">
             <Mail className="w-5 h-5 mr-2" />
             Paramètres SMTP
           </CardTitle>
@@ -23,7 +23,7 @@ export default function EmailForm() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-gray-200">Serveur SMTP</Label>
+              <Label className="">Serveur SMTP</Label>
               <Input
                 value={emailConfig.smtpServer}
                 onChange={(e) => setEmailConfig({ smtpServer: e.target.value })}
@@ -32,7 +32,7 @@ export default function EmailForm() {
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-gray-200">Port SMTP</Label>
+              <Label className="">Port SMTP</Label>
               <Input
                 type="number"
                 value={emailConfig.smtpPort}
@@ -49,7 +49,7 @@ export default function EmailForm() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-gray-200">Email d'Expédition</Label>
+              <Label className="">Email d'Expédition</Label>
               <Input
                 type="email"
                 value={emailConfig.senderEmail}
@@ -61,7 +61,7 @@ export default function EmailForm() {
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-gray-200">Mot de Passe</Label>
+              <Label className="">Mot de Passe</Label>
               <Input
                 type="password"
                 value={emailConfig.senderPassword}
@@ -75,7 +75,7 @@ export default function EmailForm() {
           </div>
 
           <div className="space-y-3">
-            <Label className="text-gray-200">Options de Sécurité</Label>
+            <Label className="">Options de Sécurité</Label>
             <div className="flex space-x-6">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -104,28 +104,6 @@ export default function EmailForm() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="space-y-2">
-              <Label className="text-gray-200">Objet</Label>
-              <Input
-                value={emailConfig.subject}
-                defaultValue={emailConfig.subject}
-                onChange={(e) => setEmailConfig({ subject: e.target.value })}
-                className="bg-gray-800 border-gray-700 text-white"
-                placeholder="Objet de l'email"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-gray-200">Message</Label>
-              <Textarea
-                value={emailConfig.message}
-                defaultValue={emailConfig.message}
-                onChange={(e) => setEmailConfig({ message: e.target.value })}
-                className="bg-gray-800 border-gray-700 text-white"
-                placeholder="Contenu de l'email"
-              />
-            </div>
-          </div>
           <Button
             disabled={isLoading}
             className="bg-blue-600 hover:bg-blue-700"

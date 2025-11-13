@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useConnectionStore } from "@/lib/database-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,36 +20,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Database } from "lucide-react";
+import { Database, Loader2 } from "lucide-react";
 
 export function DatabaseConnectionForm() {
   const {
     connectionType,
     odbcConnection,
     sqlConnection,
+    odbcSources,
+    isLoading,
     setConnectionType,
     setODBCConnection,
     setSQLConnection,
+    getOdbcSources,
+    saveConnection,
   } = useConnectionStore();
 
   const [odbcForm, setOdbcForm] = useState(odbcConnection);
   const [sqlForm, setSqlForm] = useState(sqlConnection);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const dsnOptions = [
-    "MyDataSource",
-    "ProductionDB",
-    "DevelopmentDB",
-    "TestDB",
-    "AnalyticsDB",
-  ];
+  // Load ODBC sources on mount
+  useEffect(() => {
+    getOdbcSources().catch(console.error);
+  }, [getOdbcSources]);
 
-  const handleSave = () => {
-    if (connectionType === "odbc") {
-      setODBCConnection(odbcForm);
-      alert("Connexion ODBC enregistrée !");
-    } else {
-      setSQLConnection(sqlForm);
-      alert("Connexion SQL enregistrée !");
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      if (connectionType === "odbc") {
+        setODBCConnection(odbcForm);
+      } else {
+        setSQLConnection(sqlForm);
+      }
+
+      await saveConnection();
+      alert("Connexion enregistrée avec succès !");
+    } catch (error) {
+      alert("Erreur lors de l'enregistrement de la connexion");
+      console.error(error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -57,7 +68,6 @@ export function DatabaseConnectionForm() {
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          {" "}
           <Database className="h-5 w-5" /> Connexion à la base de données
         </CardTitle>
         <CardDescription>
@@ -156,14 +166,23 @@ export function DatabaseConnectionForm() {
                 onValueChange={(value) =>
                   setOdbcForm({ ...odbcForm, dsnName: value })
                 }
+                disabled={isLoading}
               >
                 <SelectTrigger id="dsn">
-                  <SelectValue placeholder="Sélectionnez un DSN" />
+                  <SelectValue
+                    placeholder={
+                      isLoading
+                        ? "Chargement..."
+                        : odbcSources.length > 0
+                        ? "Sélectionnez un DSN"
+                        : "Aucune source ODBC disponible"
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  {dsnOptions.map((dsn) => (
-                    <SelectItem key={dsn} value={dsn}>
-                      {dsn}
+                  {odbcSources.map((source) => (
+                    <SelectItem key={source.name} value={source.name}>
+                      {source.name} ({source.description})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -195,8 +214,19 @@ export function DatabaseConnectionForm() {
           </div>
         )}
 
-        <Button onClick={handleSave} className="w-full mt-4">
-          Enregistrer la connexion
+        <Button
+          onClick={handleSave}
+          className="w-full mt-4"
+          disabled={isSaving}
+        >
+          {isSaving ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Enregistrement...
+            </>
+          ) : (
+            "Enregistrer la connexion"
+          )}
         </Button>
       </CardContent>
     </Card>

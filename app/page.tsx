@@ -16,6 +16,7 @@ import { Database, FolderInput, FolderOutput, Save } from "lucide-react";
 import { useFolderStore } from "@/lib/store";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatabaseConnectionForm } from "@/components/database-connection";
+import EmailForm from "@/components/email-form";
 
 export default function FolderPickerPage() {
   const {
@@ -120,6 +121,10 @@ export default function FolderPickerPage() {
             </TabsContent>
             <TabsContent value="database">
               <DatabaseConnectionForm />
+            </TabsContent>
+
+            <TabsContent value="email">
+              <EmailForm />
             </TabsContent>
           </Tabs>
         </div>

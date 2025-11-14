@@ -4,13 +4,18 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { useSMTPStore } from "@/lib/email-store";
+import { EmailConfig, useSMTPStore } from "@/lib/email-store";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 
 export default function EmailForm() {
   const { emailConfig, setEmailConfig, saveSMTPConfig } = useSMTPStore();
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (emailConfig: EmailConfig) => {
+    await setEmailConfig({ ...emailConfig });
+    saveSMTPConfig(emailConfig);
+  };
   return (
     <div>
       <Card className="w-full">
@@ -108,8 +113,7 @@ export default function EmailForm() {
             disabled={isLoading}
             className="mt-4"
             onClick={() => {
-              setEmailConfig({ ...emailConfig });
-              saveSMTPConfig(emailConfig);
+              handleSubmit(emailConfig);
             }}
           >
             {isLoading ? (

@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Database, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export function DatabaseConnectionForm() {
   const {
@@ -39,6 +40,7 @@ export function DatabaseConnectionForm() {
   const [odbcForm, setOdbcForm] = useState(odbcConnection);
   const [sqlForm, setSqlForm] = useState(sqlConnection);
   const [isSaving, setIsSaving] = useState(false);
+  const { toast } = useToast();
 
   // Load ODBC sources on mount
   useEffect(() => {
@@ -55,10 +57,20 @@ export function DatabaseConnectionForm() {
       }
 
       await saveConnection();
-      alert("Connexion enregistrée avec succès !");
+      toast({
+        title: "Paramètres enregistrés",
+        description: "Paramètres enregistrée avec succès !",
+      });
     } catch (error) {
-      alert("Erreur lors de l'enregistrement de la connexion");
-      console.error(error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Veuillez remplir tous les champ.";
+      toast({
+        title: "Erreur de validation",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }

@@ -7,14 +7,36 @@ import { Textarea } from "./ui/textarea";
 import { EmailConfig, useSMTPStore } from "@/lib/email-store";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export default function EmailForm() {
   const { emailConfig, setEmailConfig, saveSMTPConfig } = useSMTPStore();
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = async (emailConfig: EmailConfig) => {
-    await setEmailConfig({ ...emailConfig });
-    saveSMTPConfig(emailConfig);
+    try {
+      setIsLoading(true);
+      setEmailConfig({ ...emailConfig });
+      await saveSMTPConfig(emailConfig);
+      toast({
+        title: "Paramètres enregistrés",
+        description: "Paramètres enregistrée avec succès !",
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Veuillez remplir tous les chemins de dossiers avant d'enregistrer.";
+
+      toast({
+        title: "Erreur de validation",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <div>

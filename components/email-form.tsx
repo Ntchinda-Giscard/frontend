@@ -1,6 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Mail } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -10,10 +10,15 @@ import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 export default function EmailForm() {
-  const { emailConfig, setEmailConfig, saveSMTPConfig } = useSMTPStore();
+  const { emailConfig, setEmailConfig, saveSMTPConfig, fetchEmailConfig } =
+    useSMTPStore();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  useEffect(() => {
+    fetchEmailConfig();
+    console.log("fetching email config", emailConfig);
+  }, [fetchEmailConfig]);
   const handleSubmit = async (emailConfig: EmailConfig) => {
     try {
       setIsLoading(true);

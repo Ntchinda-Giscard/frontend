@@ -33,7 +33,8 @@ export default function FolderPickerPage() {
 
   useEffect(() => {
     fetchFolderSettings();
-  }, [fetchFolderSettings]);
+    console.log("fetching folder settings", inputFolder, outputFolder);
+  }, []);
 
   const handleSaveSettings = async () => {
     try {

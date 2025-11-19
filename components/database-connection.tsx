@@ -47,6 +47,7 @@ export function DatabaseConnectionForm() {
   useEffect(() => {
     getOdbcSources();
     fetchConnection();
+    console.log("fetching connection", odbcConnection, sqlConnection);
   }, [getOdbcSources, fetchConnection]);
 
   // Update form state when store values change
@@ -234,6 +235,7 @@ export function DatabaseConnectionForm() {
               <Input
                 id="odbc-username"
                 placeholder="admin"
+                defaultValue={odbcForm.username}
                 value={odbcForm.username}
                 onChange={(e) =>
                   setOdbcForm({ ...odbcForm, username: e.target.value })
@@ -247,6 +249,7 @@ export function DatabaseConnectionForm() {
                 id="odbc-password"
                 type="password"
                 placeholder="••••••••"
+                defaultValue={odbcForm.password}
                 value={odbcForm.password}
                 onChange={(e) =>
                   setOdbcForm({ ...odbcForm, password: e.target.value })

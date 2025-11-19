@@ -135,15 +135,14 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
-      console.log("Fetch connection response:", response);
+      const data = await response.json();
+      console.log("Fetch connection response:", data.server);
       set({
         odbcConnection: {
-          dsnName: response.ok
-            ? (await response.json()).server.odbc_source
-            : "",
-          username: response.ok ? (await response.json()).server.username : "",
-          password: response.ok ? (await response.json()).server.password : "",
-          database: response.ok ? (await response.json()).server.database : "",
+          dsnName: data.server.odbc_source,
+          username: data.server.username,
+          password: data.server.password,
+          database: data.server.database,
         },
       });
 

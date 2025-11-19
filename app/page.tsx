@@ -17,6 +17,7 @@ import { useFolderStore } from "@/lib/store";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatabaseConnectionForm } from "@/components/database-connection";
 import EmailForm from "@/components/email-form";
+import { useEffect } from "react";
 
 export default function FolderPickerPage() {
   const {
@@ -25,9 +26,14 @@ export default function FolderPickerPage() {
     setInputFolder,
     setOutputFolder,
     saveSettings,
+    fetchFolderSettings,
   } = useFolderStore();
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchFolderSettings();
+  }, [fetchFolderSettings]);
 
   const handleSaveSettings = async () => {
     try {

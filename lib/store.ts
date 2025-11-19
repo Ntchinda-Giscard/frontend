@@ -19,6 +19,7 @@ interface FolderStore extends FolderSettings {
   installService: () => Promise<void>;
   restartService: () => Promise<void>;
   getServiceStatus: () => Promise<void>;
+  fetchFolderSettings: () => Promise<void>;
 }
 
 export const useFolderStore = create<FolderStore>()((set, get) => ({
@@ -30,6 +31,31 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
   setExternalApiUrl: (url) => set({ externalApiUrl: url }),
   setInputFolder: (path) => set({ inputFolder: path }),
   setOutputFolder: (path) => set({ outputFolder: path }),
+  fetchFolderSettings: async () => {
+    const { externalApiUrl } = get();
+    try {
+      const response = await fetch(`${externalApiUrl}/config/get`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      console.log("data", data);
+      console.log("response", response);
+      if (response.ok && data) {
+        set({
+          inputFolder: data.source || "",
+          outputFolder: data.destination || "",
+        });
+      } else {
+        throw new Error(
+          data.detail || "Erreur lors de la récupération des paramètres"
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching folder settings:", error);
+      throw error;
+    }
+  },
   saveSettings: async () => {
     const { externalApiUrl, inputFolder, outputFolder } = get();
     if (!inputFolder || !outputFolder) {

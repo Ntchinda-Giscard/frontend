@@ -29,12 +29,9 @@ interface ConnectionStore {
   sqlConnection: SQLConnection;
   odbcSources: ODBCSource[];
   isLoading: boolean;
-  isSaving: boolean;
   setConnectionType: (type: ConnectionType) => void;
   setODBCConnection: (connection: ODBCConnection) => void;
   setSQLConnection: (connection: SQLConnection) => void;
-  updateODBCField: (field: keyof ODBCConnection, value: string) => void;
-  updateSQLField: (field: keyof SQLConnection, value: string) => void;
   getOdbcSources: () => Promise<void>;
   loadExistingConnection: () => Promise<void>;
   saveConnection: () => Promise<void>;
@@ -59,31 +56,10 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   },
   odbcSources: [],
   isLoading: false,
-  isSaving: false,
 
   setConnectionType: (type) => set({ connectionType: type }),
   setODBCConnection: (connection) => set({ odbcConnection: connection }),
   setSQLConnection: (connection) => set({ sqlConnection: connection }),
-
-  updateODBCField: (field, value) => {
-    const { odbcConnection } = get();
-    set({
-      odbcConnection: {
-        ...odbcConnection,
-        [field]: value,
-      },
-    });
-  },
-
-  updateSQLField: (field, value) => {
-    const { sqlConnection } = get();
-    set({
-      sqlConnection: {
-        ...sqlConnection,
-        [field]: value,
-      },
-    });
-  },
 
   getOdbcSources: async () => {
     const { externalApiUrl } = get();
@@ -119,8 +95,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       });
 
       if (!response.ok) {
-        set({ isLoading: false });
-        return; // No existing connection, that's okay
+        throw new Error("Erreur lors du chargement de la configuration");
       }
 
       const data = await response.json();
@@ -129,23 +104,21 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         const server = data.server;
 
         // Set connection type
-        const connType = server.connection_type as ConnectionType;
+        set({ connectionType: server.connection_type as ConnectionType });
 
-        // Update all state in a single set call
-        if (connType === "odbc") {
+        // Load ODBC connection if applicable
+        if (server.connection_type === "odbc") {
           set({
-            connectionType: connType,
             odbcConnection: {
               dsnName: server.odbc_source || "",
               username: server.username || "",
               password: server.password || "",
               database: server.database || "",
             },
-            isLoading: false,
           });
         } else {
+          // Load SQL connection
           set({
-            connectionType: connType,
             sqlConnection: {
               host: server.host || "",
               port: server.port?.toString() || "",
@@ -153,12 +126,11 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
               username: server.username || "",
               password: server.password || "",
             },
-            isLoading: false,
           });
         }
-      } else {
-        set({ isLoading: false });
       }
+
+      set({ isLoading: false });
     } catch (error) {
       console.error("Error loading existing connection:", error);
       set({ isLoading: false });
@@ -168,8 +140,6 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   saveConnection: async () => {
     const { externalApiUrl, connectionType, odbcConnection, sqlConnection } =
       get();
-
-    set({ isSaving: true });
 
     const payload =
       connectionType === "odbc"
@@ -204,11 +174,9 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
         throw new Error(error.detail || "Erreur lors de l'enregistrement");
       }
 
-      set({ isSaving: false });
       return await response.json();
     } catch (error) {
       console.error("Error saving connection:", error);
-      set({ isSaving: false });
       throw error;
     }
   },

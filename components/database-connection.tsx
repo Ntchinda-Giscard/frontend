@@ -201,6 +201,17 @@ export function DatabaseConnectionForm() {
               </Select>
             </div>
             <div className="space-y-2">
+              <Label htmlFor="odbc-database">Base de données</Label>
+              <Input
+                id="odbc-database"
+                placeholder="admin"
+                value={odbcForm.database}
+                onChange={(e) =>
+                  setOdbcForm({ ...odbcForm, database: e.target.value })
+                }
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="odbc-username">Nom d'utilisateur</Label>
               <Input
                 id="odbc-username"

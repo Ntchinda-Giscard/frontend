@@ -11,6 +11,7 @@ interface ODBCConnection {
   dsnName: string;
   username: string;
   password: string;
+  database: string;
 }
 
 interface SQLConnection {
@@ -43,6 +44,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
     dsnName: "",
     username: "",
     password: "",
+    database: "",
   },
   sqlConnection: {
     host: "",

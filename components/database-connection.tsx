@@ -34,8 +34,8 @@ export function DatabaseConnectionForm() {
     setODBCConnection,
     setSQLConnection,
     getOdbcSources,
-    loadExistingConnection,
     saveConnection,
+    fetchConnection,
   } = useConnectionStore();
 
   const [odbcForm, setOdbcForm] = useState(odbcConnection);
@@ -45,16 +45,9 @@ export function DatabaseConnectionForm() {
 
   // Load ODBC sources and existing connection on mount
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        await Promise.all([getOdbcSources(), loadExistingConnection()]);
-      } catch (error) {
-        console.error("Error loading data:", error);
-      }
-    };
-
-    loadData();
-  }, [getOdbcSources, loadExistingConnection]);
+    getOdbcSources();
+    fetchConnection();
+  }, [getOdbcSources, fetchConnection]);
 
   // Update form state when store values change
   useEffect(() => {

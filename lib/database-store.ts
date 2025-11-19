@@ -33,8 +33,8 @@ interface ConnectionStore {
   setODBCConnection: (connection: ODBCConnection) => void;
   setSQLConnection: (connection: SQLConnection) => void;
   getOdbcSources: () => Promise<void>;
-  loadExistingConnection: () => Promise<void>;
   saveConnection: () => Promise<void>;
+  fetchConnection: () => Promise<void>;
 }
 
 export const useConnectionStore = create<ConnectionStore>((set, get) => ({
@@ -84,59 +84,6 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
     }
   },
 
-  loadExistingConnection: async () => {
-    const { externalApiUrl } = get();
-    set({ isLoading: true });
-
-    try {
-      const response = await fetch(`${externalApiUrl}/odbc/get-database`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) {
-        throw new Error("Erreur lors du chargement de la configuration");
-      }
-
-      const data = await response.json();
-
-      if (data.server) {
-        const server = data.server;
-
-        // Set connection type
-        set({ connectionType: server.connection_type as ConnectionType });
-
-        // Load ODBC connection if applicable
-        if (server.connection_type === "odbc") {
-          set({
-            odbcConnection: {
-              dsnName: server.odbc_source || "",
-              username: server.username || "",
-              password: server.password || "",
-              database: server.database || "",
-            },
-          });
-        } else {
-          // Load SQL connection
-          set({
-            sqlConnection: {
-              host: server.host || "",
-              port: server.port?.toString() || "",
-              database: server.database || "",
-              username: server.username || "",
-              password: server.password || "",
-            },
-          });
-        }
-      }
-
-      set({ isLoading: false });
-    } catch (error) {
-      console.error("Error loading existing connection:", error);
-      set({ isLoading: false });
-    }
-  },
-
   saveConnection: async () => {
     const { externalApiUrl, connectionType, odbcConnection, sqlConnection } =
       get();
@@ -177,6 +124,34 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       return await response.json();
     } catch (error) {
       console.error("Error saving connection:", error);
+      throw error;
+    }
+  },
+  fetchConnection: async () => {
+    const { externalApiUrl } = get();
+
+    try {
+      const response = await fetch(`${externalApiUrl}/odbc/get-database`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("Fetch connection response:", response);
+      set({
+        odbcConnection: {
+          dsnName: response.ok
+            ? (await response.json()).server.odbc_source
+            : "",
+          username: response.ok ? (await response.json()).server.username : "",
+          password: response.ok ? (await response.json()).server.password : "",
+          database: response.ok ? (await response.json()).server.database : "",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la récupération de la connexion");
+      }
+    } catch (error) {
+      console.error("Error fetching existing connection:", error);
       throw error;
     }
   },

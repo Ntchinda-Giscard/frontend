@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useConnectionStore } from "@/lib/database-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,32 +30,32 @@ export function DatabaseConnectionForm() {
     sqlConnection,
     odbcSources,
     isLoading,
+    isSaving,
     setConnectionType,
-    setODBCConnection,
-    setSQLConnection,
+    updateODBCField,
+    updateSQLField,
     getOdbcSources,
+    loadExistingConnection,
     saveConnection,
   } = useConnectionStore();
 
-  const [odbcForm, setOdbcForm] = useState(odbcConnection);
-  const [sqlForm, setSqlForm] = useState(sqlConnection);
-  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
 
-  // Load ODBC sources on mount
+  // Load ODBC sources and existing connection on mount
   useEffect(() => {
-    getOdbcSources().catch(console.error);
-  }, [getOdbcSources]);
+    const loadData = async () => {
+      try {
+        await Promise.all([getOdbcSources(), loadExistingConnection()]);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      }
+    };
+
+    loadData();
+  }, [getOdbcSources, loadExistingConnection]);
 
   const handleSave = async () => {
-    setIsSaving(true);
     try {
-      if (connectionType === "odbc") {
-        setODBCConnection(odbcForm);
-      } else {
-        setSQLConnection(sqlForm);
-      }
-
       await saveConnection();
       toast({
         title: "Paramètres enregistrés",
@@ -71,8 +71,6 @@ export function DatabaseConnectionForm() {
         description: errorMessage,
         variant: "destructive",
       });
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -94,6 +92,7 @@ export function DatabaseConnectionForm() {
             onValueChange={(value) =>
               setConnectionType(value as "odbc" | "sql")
             }
+            disabled={isLoading}
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="sql" id="sql" />
@@ -117,10 +116,9 @@ export function DatabaseConnectionForm() {
               <Input
                 id="host"
                 placeholder="localhost"
-                value={sqlForm.host}
-                onChange={(e) =>
-                  setSqlForm({ ...sqlForm, host: e.target.value })
-                }
+                value={sqlConnection.host}
+                onChange={(e) => updateSQLField("host", e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -128,10 +126,9 @@ export function DatabaseConnectionForm() {
               <Input
                 id="port"
                 placeholder="5432"
-                value={sqlForm.port}
-                onChange={(e) =>
-                  setSqlForm({ ...sqlForm, port: e.target.value })
-                }
+                value={sqlConnection.port}
+                onChange={(e) => updateSQLField("port", e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -139,10 +136,9 @@ export function DatabaseConnectionForm() {
               <Input
                 id="database"
                 placeholder="mabase"
-                value={sqlForm.database}
-                onChange={(e) =>
-                  setSqlForm({ ...sqlForm, database: e.target.value })
-                }
+                value={sqlConnection.database}
+                onChange={(e) => updateSQLField("database", e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -150,10 +146,9 @@ export function DatabaseConnectionForm() {
               <Input
                 id="sql-username"
                 placeholder="admin"
-                value={sqlForm.username}
-                onChange={(e) =>
-                  setSqlForm({ ...sqlForm, username: e.target.value })
-                }
+                value={sqlConnection.username}
+                onChange={(e) => updateSQLField("username", e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -162,10 +157,9 @@ export function DatabaseConnectionForm() {
                 id="sql-password"
                 type="password"
                 placeholder="••••••••"
-                value={sqlForm.password}
-                onChange={(e) =>
-                  setSqlForm({ ...sqlForm, password: e.target.value })
-                }
+                value={sqlConnection.password}
+                onChange={(e) => updateSQLField("password", e.target.value)}
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -174,10 +168,8 @@ export function DatabaseConnectionForm() {
             <div className="space-y-2">
               <Label htmlFor="dsn">Nom DSN</Label>
               <Select
-                value={odbcForm.dsnName}
-                onValueChange={(value) =>
-                  setOdbcForm({ ...odbcForm, dsnName: value })
-                }
+                value={odbcConnection.dsnName}
+                onValueChange={(value) => updateODBCField("dsnName", value)}
                 disabled={isLoading}
               >
                 <SelectTrigger id="dsn">
@@ -204,11 +196,10 @@ export function DatabaseConnectionForm() {
               <Label htmlFor="odbc-database">Base de données</Label>
               <Input
                 id="odbc-database"
-                placeholder="admin"
-                value={odbcForm.database}
-                onChange={(e) =>
-                  setOdbcForm({ ...odbcForm, database: e.target.value })
-                }
+                placeholder="sage_x3"
+                value={odbcConnection.database}
+                onChange={(e) => updateODBCField("database", e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -216,10 +207,9 @@ export function DatabaseConnectionForm() {
               <Input
                 id="odbc-username"
                 placeholder="admin"
-                value={odbcForm.username}
-                onChange={(e) =>
-                  setOdbcForm({ ...odbcForm, username: e.target.value })
-                }
+                value={odbcConnection.username}
+                onChange={(e) => updateODBCField("username", e.target.value)}
+                disabled={isLoading}
               />
             </div>
             <div className="space-y-2">
@@ -228,10 +218,9 @@ export function DatabaseConnectionForm() {
                 id="odbc-password"
                 type="password"
                 placeholder="••••••••"
-                value={odbcForm.password}
-                onChange={(e) =>
-                  setOdbcForm({ ...odbcForm, password: e.target.value })
-                }
+                value={odbcConnection.password}
+                onChange={(e) => updateODBCField("password", e.target.value)}
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -240,7 +229,7 @@ export function DatabaseConnectionForm() {
         <Button
           onClick={handleSave}
           className="w-full mt-4"
-          disabled={isSaving}
+          disabled={isSaving || isLoading}
         >
           {isSaving ? (
             <>

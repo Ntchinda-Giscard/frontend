@@ -93,6 +93,18 @@ export default function EmailForm() {
               />
             </div>
             <div className="space-y-2">
+              <Label className="">Email Receptrice</Label>
+              <Input
+                type="email"
+                value={emailConfig.receiverEmail}
+                onChange={(e) =>
+                  setEmailConfig({ receiverEmail: e.target.value })
+                }
+                className=""
+                placeholder="noreply@company.com"
+              />
+            </div>
+            <div className="space-y-2">
               <Label className="">Mot de Passe</Label>
               <Input
                 type="password"

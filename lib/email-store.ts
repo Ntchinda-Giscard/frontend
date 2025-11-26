@@ -4,6 +4,7 @@ export interface EmailConfig {
   smtpServer: string;
   smtpPort: number;
   senderEmail: string;
+  receiverEmail: string;
   senderPassword: string;
   useSSL: boolean;
   useTLS: boolean;
@@ -28,6 +29,7 @@ export const useSMTPStore = create<AppState>((set, get) => ({
     smtpServer: "",
     smtpPort: 0,
     senderEmail: "",
+    receiverEmail: "",
     senderPassword: "",
     useSSL: false,
     useTLS: false,
@@ -47,6 +49,7 @@ export const useSMTPStore = create<AppState>((set, get) => ({
           smtpServer: config.smtpServer,
           smtpPort: config.smtpPort,
           senderEmail: config.senderEmail,
+          receiverEmail: config.receiverEmail,
           senderPassword: config.senderPassword,
           useSSL: config.useSSL,
           useTLS: config.useTLS,
@@ -76,6 +79,7 @@ export const useSMTPStore = create<AppState>((set, get) => ({
             smtpServer: data.smtpServer || "",
             smtpPort: data.smtpPort || 0,
             senderEmail: data.senderEmail || "",
+            receiverEmail: data.receiverEmail || "",
             senderPassword: data.senderPassword || "",
             useSSL: data.useSSL || false,
             useTLS: data.useTLS || false,

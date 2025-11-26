@@ -12,12 +12,14 @@ interface ODBCConnection {
   username: string;
   password: string;
   database: string;
+  schemas: string;
 }
 
 interface SQLConnection {
   host: string;
   port: string;
   database: string;
+  schemas: string;
   username: string;
   password: string;
 }
@@ -34,7 +36,7 @@ interface ConnectionStore {
   setSQLConnection: (connection: SQLConnection) => void;
   getOdbcSources: () => Promise<void>;
   saveConnection: () => Promise<void>;
-  fetchConnection: () => Promise<void>;
+  fetchODBCConnection: () => Promise<void>;
 }
 
 export const useConnectionStore = create<ConnectionStore>((set, get) => ({
@@ -46,11 +48,13 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
     username: "",
     password: "",
     database: "",
+    schemas: "",
   },
   sqlConnection: {
     host: "",
     port: "",
     database: "",
+    schemas: "",
     username: "",
     password: "",
   },
@@ -98,6 +102,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
             host: null,
             port: null,
             database: odbcConnection.database,
+            schemas: odbcConnection.schemas,
           }
         : {
             connection_type: "sql",
@@ -105,6 +110,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
             host: sqlConnection.host,
             port: parseInt(sqlConnection.port) || null,
             database: sqlConnection.database,
+            schemas: sqlConnection.schemas,
             username: sqlConnection.username,
             password: sqlConnection.password,
           };
@@ -127,7 +133,7 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
       throw error;
     }
   },
-  fetchConnection: async () => {
+  fetchODBCConnection: async () => {
     const { externalApiUrl } = get();
 
     try {
@@ -143,6 +149,36 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           username: data.server.username,
           password: data.server.password,
           database: data.server.database,
+          schemas: data.server.schemas,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la récupération de la connexion");
+      }
+    } catch (error) {
+      console.error("Error fetching existing connection:", error);
+      throw error;
+    }
+  },
+  fetchSQLConnection: async () => {
+    const { externalApiUrl } = get();
+
+    try {
+      const response = await fetch(`${externalApiUrl}/odbc/get-database`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      console.log("Fetch connection response:", data.server);
+      set({
+        sqlConnection: {
+          host: data.server.host,
+          port: data.server.port,
+          database: data.server.database,
+          schemas: data.server.schemas,
+          username: data.server.username,
+          password: data.server.password,
         },
       });
 

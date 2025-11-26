@@ -35,7 +35,7 @@ export function DatabaseConnectionForm() {
     setSQLConnection,
     getOdbcSources,
     saveConnection,
-    fetchConnection,
+    fetchODBCConnection,
   } = useConnectionStore();
 
   const [odbcForm, setOdbcForm] = useState(odbcConnection);
@@ -46,9 +46,9 @@ export function DatabaseConnectionForm() {
   // Load ODBC sources and existing connection on mount
   useEffect(() => {
     getOdbcSources();
-    fetchConnection();
+    fetchODBCConnection();
     console.log("fetching connection", odbcConnection, sqlConnection);
-  }, [getOdbcSources, fetchConnection]);
+  }, [getOdbcSources, fetchODBCConnection]);
 
   // Update form state when store values change
   useEffect(() => {
@@ -162,6 +162,18 @@ export function DatabaseConnectionForm() {
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="schemas">Schemas</Label>
+              <Input
+                id="schemas"
+                placeholder="public"
+                value={sqlForm.schemas}
+                onChange={(e) =>
+                  setSqlForm({ ...sqlForm, schemas: e.target.value })
+                }
+                disabled={isLoading}
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="sql-username">Nom d'utilisateur</Label>
               <Input
                 id="sql-username"
@@ -226,6 +238,19 @@ export function DatabaseConnectionForm() {
                 value={odbcForm.database}
                 onChange={(e) =>
                   setOdbcForm({ ...odbcForm, database: e.target.value })
+                }
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="odbc-schemas">Schemas</Label>
+              <Input
+                id="odbc-schemas"
+                placeholder="public"
+                value={odbcForm.schemas}
+                onChange={(e) =>
+                  setOdbcForm({ ...odbcForm, schemas: e.target.value })
                 }
                 disabled={isLoading}
               />

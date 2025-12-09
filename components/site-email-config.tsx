@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { FieldPairComponent } from "@/components/field-pair";
-import { useFormStore } from "@/lib/store";
+import { useFormStore } from "@/lib/email-site";
 import { validateFieldPair } from "@/lib/validation";
 import { useToast } from "@/hooks/use-toast";
 

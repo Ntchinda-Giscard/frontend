@@ -7,7 +7,13 @@ import { FieldPairComponent } from "@/components/field-pair";
 import { useFormStore } from "@/lib/email-site";
 import { validateFieldPair } from "@/lib/validation";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 
 export default function SiteEmailConfig() {
   const { fields, addFieldPair, removeFieldPair, updateFieldPair, resetForm } =
@@ -78,25 +84,20 @@ export default function SiteEmailConfig() {
   };
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Mail className="w-5 h-5 mr-2" />
-                  Enregistrement Site & Email
-                </CardTitle>
-                <CardDescription>
-                  Ajoutez plusieurs paires site et adresse email pour vous
-                  enregistrer
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
+    <div>
+      {/* Header */}
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="w-5 h-5 mr-2" />
+            Enregistrement Site & Email
+          </CardTitle>
+          <CardDescription>
+            Ajoutez plusieurs paires site et adresse email pour vous enregistrer
+          </CardDescription>
+        </CardHeader>
 
+        <CardContent className="space-y-4">
           {/* Form Container */}
           <div className="space-y-6">
             {/* Field Pairs List */}
@@ -132,8 +133,8 @@ export default function SiteEmailConfig() {
               {isLoading ? "Enregistrement..." : "Enregistrer"}
             </Button>
           </div>
-        </div>
-      </div>
-    </main>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

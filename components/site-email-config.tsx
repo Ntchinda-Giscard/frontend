@@ -8,7 +8,7 @@ import { useFormStore } from "@/lib/email-site";
 import { validateFieldPair } from "@/lib/validation";
 import { useToast } from "@/hooks/use-toast";
 
-export default function Home() {
+export default function SiteEmailConfig() {
   const { fields, addFieldPair, removeFieldPair, updateFieldPair, resetForm } =
     useFormStore();
   const { toast } = useToast();

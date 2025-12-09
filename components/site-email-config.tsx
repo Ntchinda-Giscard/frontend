@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Mail, Plus } from "lucide-react";
 import { FieldPairComponent } from "@/components/field-pair";
 import { useFormStore } from "@/lib/email-site";
 import { validateFieldPair } from "@/lib/validation";
 import { useToast } from "@/hooks/use-toast";
+import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 export default function SiteEmailConfig() {
   const { fields, addFieldPair, removeFieldPair, updateFieldPair, resetForm } =
@@ -82,13 +83,18 @@ export default function SiteEmailConfig() {
         <div className="max-w-2xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-2">
-              Enregistrement Site & Email
-            </h1>
-            <p className="text-muted-foreground">
-              Ajoutez plusieurs paires site et adresse email pour vous
-              enregistrer
-            </p>
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Mail className="w-5 h-5 mr-2" />
+                  Enregistrement Site & Email
+                </CardTitle>
+                <CardDescription>
+                  Ajoutez plusieurs paires site et adresse email pour vous
+                  enregistrer
+                </CardDescription>
+              </CardHeader>
+            </Card>
           </div>
 
           {/* Form Container */}
@@ -125,14 +131,6 @@ export default function SiteEmailConfig() {
             >
               {isLoading ? "Enregistrement..." : "Enregistrer"}
             </Button>
-          </div>
-
-          {/* Info Text */}
-          <div className="mt-8 p-4 bg-muted rounded-lg">
-            <p className="text-sm text-muted-foreground">
-              Champs: {fields.length} • Validation: Format email + noms de site
-              d'au moins 2 caractères
-            </p>
           </div>
         </div>
       </div>

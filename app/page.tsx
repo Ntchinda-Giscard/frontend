@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatabaseConnectionForm } from "@/components/database-connection";
 import EmailForm from "@/components/email-form";
 import { useEffect } from "react";
+import SiteEmailConfig from "@/components/site-email-config";
 
 export default function FolderPickerPage() {
   const {
@@ -77,6 +78,7 @@ export default function FolderPickerPage() {
               <TabsTrigger value="database"> Base de donnée</TabsTrigger>
               <TabsTrigger value="dossier"> Dossier </TabsTrigger>
               <TabsTrigger value="email">Configuration SMTP</TabsTrigger>
+              <TabsTrigger value="site-email"> Conf </TabsTrigger>
             </TabsList>
 
             <TabsContent value="dossier">
@@ -132,6 +134,10 @@ export default function FolderPickerPage() {
 
             <TabsContent value="email">
               <EmailForm />
+            </TabsContent>
+
+            <TabsContent value="site-email">
+              <SiteEmailConfig />
             </TabsContent>
           </Tabs>
         </div>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Mail, Plus } from "lucide-react";
+import { Mail, MapPinHouse, Plus } from "lucide-react";
 import { FieldPairComponent } from "@/components/field-pair";
 import { useFormStore } from "@/lib/email-site";
 import { validateFieldPair } from "@/lib/validation";
@@ -89,7 +89,7 @@ export default function SiteEmailConfig() {
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Mail className="w-5 h-5 mr-2" />
+            <MapPinHouse className="w-5 h-5 mr-2" />
             Enregistrement Site & Email
           </CardTitle>
           <CardDescription>

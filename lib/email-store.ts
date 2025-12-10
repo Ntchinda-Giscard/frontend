@@ -24,7 +24,7 @@ interface AppState {
 
 export const useSMTPStore = create<AppState>((set, get) => ({
   externalApiUrl:
-    process.env.NEXT_PUBLIC_EXTERNAL_API_URL || "http://127.0.0.1:5000",
+    process.env.NEXT_PUBLIC_EXTERNAL_API_URL || "http://127.0.0.1:5001",
   emailConfig: {
     smtpServer: "",
     smtpPort: 0,

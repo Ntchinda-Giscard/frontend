@@ -2,20 +2,13 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Mail, MapPinHouse, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { FieldPairComponent } from "@/components/field-pair";
 import { useFormStore } from "@/lib/email-site";
 import { validateFieldPair } from "@/lib/validation";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
 
-export default function SiteEmailConfig() {
+export default function Home() {
   const { fields, addFieldPair, removeFieldPair, updateFieldPair, resetForm } =
     useFormStore();
   const { toast } = useToast();
@@ -47,12 +40,14 @@ export default function SiteEmailConfig() {
       return;
     }
 
-    // Prepare data in the format [[field1, field2], ...]
-    const payload = fields.map((field) => [field.site, field.email_address]);
+    const payload = fields.map((field) => ({
+      site: field.site,
+      email_address: field.email_address,
+    }));
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5001/add/address", {
+      const response = await fetch("http://localhost:5001/config/add/address", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -84,20 +79,20 @@ export default function SiteEmailConfig() {
   };
 
   return (
-    <div>
-      {/* Header */}
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPinHouse className="w-5 h-5 mr-2" />
-            Enregistrement Site & Email
-          </CardTitle>
-          <CardDescription>
-            Ajoutez plusieurs paires site et adresse email pour vous enregistrer
-          </CardDescription>
-        </CardHeader>
+    <main className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-2xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-foreground mb-2">
+              Enregistrement Site & Email
+            </h1>
+            <p className="text-muted-foreground">
+              Ajoutez plusieurs paires site et adresse email pour vous
+              enregistrer
+            </p>
+          </div>
 
-        <CardContent className="space-y-4">
           {/* Form Container */}
           <div className="space-y-6">
             {/* Field Pairs List */}
@@ -133,8 +128,22 @@ export default function SiteEmailConfig() {
               {isLoading ? "Enregistrement..." : "Enregistrer"}
             </Button>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+
+          {/* Info Text */}
+          <div className="mt-8 p-4 bg-muted rounded-lg">
+            <p className="text-sm text-muted-foreground">
+              Champs: {fields.length} • Validation: Format email + noms de site
+              d'au moins 2 caractères
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }
+
+// smtp.gmail.com;
+// txdp zcoh ucum ezxt
+// ntchinda1998 @gmail.com
+// giscardntchinda @gmail.com
+// 587

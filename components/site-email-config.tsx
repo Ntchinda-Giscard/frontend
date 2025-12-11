@@ -7,7 +7,7 @@ import { FieldPairComponent } from "@/components/field-pair";
 import { useFormStore } from "@/lib/email-site";
 import { validateFieldPair } from "@/lib/validation";
 import { useToast } from "@/hooks/use-toast";
-import { fetchInitialConfig, submitFormData } from "./actions";
+import { fetchInitialConfig, submitFormData } from "@/app/action";
 
 export default function Home() {
   const {

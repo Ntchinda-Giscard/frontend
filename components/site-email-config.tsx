@@ -41,7 +41,7 @@ export default function Home() {
     }
 
     const payload = fields.map((field) => ({
-      site: field.site,
+      site_url: field.site,
       email_address: field.email_address,
     }));
 

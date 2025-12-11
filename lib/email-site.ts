@@ -13,10 +13,13 @@ type FormStore = {
   updateFieldPair: (id: string, updates: Partial<FieldPair>) => void;
   setFields: (fields: FieldPair[]) => void;
   resetForm: () => void;
+  isLoading: boolean;
+  setIsLoading: (loading: boolean) => void;
 };
 
 export const useFormStore = create<FormStore>((set) => ({
   fields: [{ id: "1", site: "", email_address: "" }],
+  isLoading: false,
 
   addFieldPair: () =>
     set((state) => ({
@@ -45,4 +48,6 @@ export const useFormStore = create<FormStore>((set) => ({
   setFields: (fields: FieldPair[]) => set({ fields }),
 
   resetForm: () => set({ fields: [{ id: "1", site: "", email_address: "" }] }),
+
+  setIsLoading: (loading: boolean) => set({ isLoading: loading }),
 }));

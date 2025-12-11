@@ -5,7 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { validateFieldPair } from "@/lib/validation";
-import type { FieldPair } from "@/lib/email-site";
+import { useToast } from "@/hooks/use-toast";
+import { deleteAddress } from "@/app/actions";
+import type { FieldPair } from "@/lib/store";
 
 interface FieldPairProps {
   pair: FieldPair;
@@ -21,6 +23,8 @@ export function FieldPairComponent({
   isMultiple,
 }: FieldPairProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { toast } = useToast();
 
   const handleSiteChange = (value: string) => {
     onUpdate(pair.id, { site: value });
@@ -53,6 +57,28 @@ export function FieldPairComponent({
     if (!isValid) {
       setErrors(newErrors);
     }
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    const result = await deleteAddress(pair.site);
+
+    if (result.success) {
+      toast({
+        title: "Succès",
+        description: `Le site "${pair.site}" a été supprimé.`,
+        variant: "default",
+      });
+      onRemove(pair.id);
+    } else {
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer ce site. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    }
+
+    setIsDeleting(false);
   };
 
   return (
@@ -94,11 +120,12 @@ export function FieldPairComponent({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => onRemove(pair.id)}
+          onClick={handleDelete}
+          disabled={isDeleting}
           className="self-start text-destructive hover:bg-destructive/10"
         >
           <X className="w-4 h-4 mr-2" />
-          Supprimer
+          {isDeleting ? "Suppression..." : "Supprimer"}
         </Button>
       )}
     </div>

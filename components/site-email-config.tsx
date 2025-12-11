@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { FieldPairComponent } from "@/components/field-pair";
 import { useFormStore } from "@/lib/email-site";
 import { validateFieldPair } from "@/lib/validation";
 import { useToast } from "@/hooks/use-toast";
-import { fetchInitialConfig, submitFormData } from "@/app/action";
 
 export default function Home() {
   const {
@@ -22,38 +21,6 @@ export default function Home() {
   } = useFormStore();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    const loadInitialData = async () => {
-      setIsLoading(true);
-      const result = await fetchInitialConfig();
-
-      if (
-        result.success &&
-        Array.isArray(result.data) &&
-        result.data.length > 0
-      ) {
-        const initialFields = result.data.map((item: any, index: number) => ({
-          id: (index + 1).toString(),
-          site: item.site,
-          email_address: item.email_address,
-        }));
-        setFields(initialFields);
-      }
-
-      if (!result.success) {
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger les données initiales.",
-          variant: "destructive",
-        });
-      }
-
-      setIsLoading(false);
-    };
-
-    loadInitialData();
-  }, [setIsLoading, setFields, toast]);
 
   const handleSubmit = async () => {
     // Validate all field pairs
@@ -87,25 +54,72 @@ export default function Home() {
     }));
 
     setIsSubmitting(true);
-    const result = await submitFormData(payload);
+    try {
+      const response = await fetch("http://localhost:5001", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (result.success) {
+      if (!response.ok) {
+        throw new Error("Failed to register");
+      }
+
       toast({
         title: "Succès!",
         description: "Vos données ont été enregistrées avec succès.",
         variant: "default",
       });
+
       resetForm();
-    } else {
+    } catch (error) {
+      console.error("Error:", error);
       toast({
         title: "Erreur",
         description: "Échec de l'enregistrement. Veuillez réessayer.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsSubmitting(false);
   };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          "http://localhost:5001/config/get/address"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch initial data");
+        }
+        const data = await response.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          const initialFields = data.map((item: any, index: number) => ({
+            id: (index + 1).toString(),
+            site: item.site,
+            email_address: item.email_address,
+          }));
+          setFields(initialFields);
+        }
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les données initiales.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
 
   return (
     <main className="min-h-screen bg-background">
@@ -125,63 +139,54 @@ export default function Home() {
           {/* Form Container */}
           <div className="space-y-6">
             {/* Field Pairs List */}
-            {isLoading ? (
-              <div className="flex justify-center items-center py-8">
-                <div className="text-center">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-foreground"></div>
-                  <p className="text-muted-foreground mt-2">
-                    Chargement des données...
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="space-y-4">
-                  {fields.map((field, index) => (
-                    <FieldPairComponent
-                      key={field.id}
-                      pair={field}
-                      onUpdate={updateFieldPair}
-                      onRemove={removeFieldPair}
-                      isMultiple={fields.length > 1}
-                    />
-                  ))}
-                </div>
+            <div className="space-y-4">
+              {fields.map((field, index) => (
+                <FieldPairComponent
+                  key={field.id}
+                  pair={field}
+                  onUpdate={updateFieldPair}
+                  onRemove={removeFieldPair}
+                  isMultiple={fields.length > 1}
+                />
+              ))}
+            </div>
 
-                {/* Add Button */}
-                <Button
-                  onClick={addFieldPair}
-                  variant="outline"
-                  className="w-full bg-transparent"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Ajouter une paire
-                </Button>
+            {/* Add Button */}
+            <Button
+              onClick={addFieldPair}
+              variant="outline"
+              className="w-full bg-transparent"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Ajouter une paire
+            </Button>
 
-                {/* Register Button */}
-                <Button
-                  onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  className="w-full"
-                  size="lg"
-                >
-                  {isSubmitting ? "Enregistrement..." : "Enregistrer"}
-                </Button>
-              </>
-            )}
+            {/* Register Button */}
+            <Button
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="w-full"
+              size="lg"
+            >
+              {isLoading ? "Enregistrement..." : "Enregistrer"}
+            </Button>
           </div>
 
           {/* Info Text */}
-          {!isLoading && (
-            <div className="mt-8 p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">
-                Champs: {fields.length} • Validation: Format email + noms de
-                site d'au moins 2 caractères
-              </p>
-            </div>
-          )}
+          <div className="mt-8 p-4 bg-muted rounded-lg">
+            <p className="text-sm text-muted-foreground">
+              Champs: {fields.length} • Validation: Format email + noms de site
+              d'au moins 2 caractères
+            </p>
+          </div>
         </div>
       </div>
     </main>
   );
 }
+
+// smtp.gmail.com;
+// txdp zcoh ucum ezxt
+// ntchinda1998 @gmail.com
+// giscardntchinda @gmail.com
+// 587

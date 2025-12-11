@@ -7,7 +7,7 @@ import { X } from "lucide-react";
 import { validateFieldPair } from "@/lib/validation";
 import { useToast } from "@/hooks/use-toast";
 import { deleteAddress } from "@/app/actions";
-import type { FieldPair } from "@/lib/store";
+import type { FieldPair } from "@/lib/email-site";
 
 interface FieldPairProps {
   pair: FieldPair;

@@ -28,7 +28,7 @@ export async function submitFormData(
   payload: Array<{ site: string; email_config: string }>
 ) {
   try {
-    const response = await fetch("http://localhost:5001", {
+    const response = await fetch("http://localhost:5001/config/add/address", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

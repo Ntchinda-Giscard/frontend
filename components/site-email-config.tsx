@@ -68,6 +68,7 @@ export default function SiteEmailConfig() {
       // }
 
       submitFormData(payload);
+      await fetchInitialConfig();
 
       toast({
         title: "Succès!",

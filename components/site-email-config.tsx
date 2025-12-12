@@ -8,7 +8,7 @@ import { useFormStore } from "@/lib/email-site";
 import { validateFieldPair } from "@/lib/validation";
 import { useToast } from "@/hooks/use-toast";
 
-export default function Home() {
+export default function SiteEmailConfig() {
   const {
     fields,
     addFieldPair,
@@ -50,22 +50,24 @@ export default function Home() {
 
     const payload = fields.map((field) => ({
       site: field.site,
-      email_config: field.email_address,
+      email_address: field.email_address,
     }));
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("http://localhost:5001", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      // const response = await fetch("http://localhost:5001/config/add/address", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(payload),
+      // });
 
-      if (!response.ok) {
-        throw new Error("Failed to register");
-      }
+      // if (!response.ok) {
+      //   throw new Error("Failed to register");
+      // }
+
+      submitFormData(payload);
 
       toast({
         title: "Succès!",
@@ -173,16 +175,92 @@ export default function Home() {
           </div>
 
           {/* Info Text */}
-          <div className="mt-8 p-4 bg-muted rounded-lg">
+          {/* <div className="mt-8 p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground">
               Champs: {fields.length} • Validation: Format email + noms de site
               d'au moins 2 caractères
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </main>
   );
+}
+
+export async function fetchInitialConfig() {
+  try {
+    const response = await fetch("http://localhost:5001/config/get/address", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    console.error("[v0] Server fetch error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+export async function submitFormData(
+  payload: Array<{ site: string; email_address: string }>
+) {
+  try {
+    const response = await fetch("http://localhost:5001/config/add/address", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("[v0] Server submit error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
+}
+
+export async function deleteAddress(site: string) {
+  try {
+    const response = await fetch(
+      `http://localhost:5001/config/delete/address/${site}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("[v0] Server delete error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
 }
 
 // smtp.gmail.com;

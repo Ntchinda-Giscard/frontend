@@ -75,8 +75,6 @@ export default function SiteEmailConfig() {
         description: "Vos données ont été enregistrées avec succès.",
         variant: "default",
       });
-
-      resetForm();
     } catch (error) {
       console.error("Error:", error);
       toast({

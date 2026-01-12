@@ -172,14 +172,6 @@ export default function SiteEmailConfig() {
               {isLoading ? "Enregistrement..." : "Enregistrer"}
             </Button>
           </div>
-
-          {/* Info Text */}
-          {/* <div className="mt-8 p-4 bg-muted rounded-lg">
-            <p className="text-sm text-muted-foreground">
-              Champs: {fields.length} • Validation: Format email + noms de site
-              d'au moins 2 caractères
-            </p>
-          </div> */}
         </div>
       </div>
     </main>

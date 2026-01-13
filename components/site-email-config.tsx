@@ -67,8 +67,17 @@ export default function SiteEmailConfig() {
       //   throw new Error("Failed to register");
       // }
 
-      submitFormData(payload);
-      await fetchInitialConfig();
+      await submitFormData(payload);
+      const result = await fetchInitialConfig();
+
+      if (result.success && Array.isArray(result.data)) {
+        const newFields = result.data.map((item: any, index: number) => ({
+          id: (index + 1).toString(),
+          site: item.site,
+          email_address: item.email_address,
+        }));
+        setFields(newFields);
+      }
 
       toast({
         title: "Succès!",

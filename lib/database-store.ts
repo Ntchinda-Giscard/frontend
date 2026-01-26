@@ -42,7 +42,7 @@ interface ConnectionStore {
 export const useConnectionStore = create<ConnectionStore>((set, get) => ({
   connectionType: "sql",
   externalApiUrl:
-    process.env.NEXT_PUBLIC_EXTERNAL_API_URL || "http://127.0.0.1:5001",
+    process.env.NEXT_PUBLIC_EXTERNAL_API_URL || "http://127.0.0.1:8005",
   odbcConnection: {
     dsnName: "",
     username: "",

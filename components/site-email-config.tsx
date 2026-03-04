@@ -30,7 +30,7 @@ export default function SiteEmailConfig() {
     fields.forEach((field) => {
       const { isValid, errors } = validateFieldPair(
         field.site,
-        field.email_address
+        field.email_address,
       );
       if (!isValid) {
         validationErrors[field.id] = errors;
@@ -101,7 +101,7 @@ export default function SiteEmailConfig() {
       setIsLoading(true);
       try {
         const response = await fetch(
-          "http://localhost:5001/config/get/address"
+          "http://localhost:8005/config/get/address",
         );
         if (!response.ok) {
           throw new Error("Failed to fetch initial data");
@@ -189,7 +189,7 @@ export default function SiteEmailConfig() {
 
 export async function fetchInitialConfig() {
   try {
-    const response = await fetch("http://localhost:5001/config/get/address", {
+    const response = await fetch("http://localhost:8005/config/get/address", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -212,10 +212,10 @@ export async function fetchInitialConfig() {
 }
 
 export async function submitFormData(
-  payload: Array<{ site: string; email_address: string }>
+  payload: Array<{ site: string; email_address: string }>,
 ) {
   try {
-    const response = await fetch("http://localhost:5001/config/add/address", {
+    const response = await fetch("http://localhost:8005/config/add/address", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -240,13 +240,13 @@ export async function submitFormData(
 export async function deleteAddress(site: string) {
   try {
     const response = await fetch(
-      `http://localhost:5001/config/delete/address/${site}`,
+      `http://localhost:8005/config/delete/address/${site}`,
       {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!response.ok) {

@@ -18,6 +18,7 @@ interface FolderStore extends FolderSettings {
   stopService: () => Promise<void>;
   installService: () => Promise<void>;
   restartService: () => Promise<void>;
+  resetService: () => Promise<void>;
   getServiceStatus: () => Promise<void>;
   fetchFolderSettings: () => Promise<void>;
 }
@@ -48,7 +49,7 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
         });
       } else {
         throw new Error(
-          data.detail || "Erreur lors de la récupération des paramètres"
+          data.detail || "Erreur lors de la récupération des paramètres",
         );
       }
     } catch (error) {
@@ -182,6 +183,27 @@ export const useFolderStore = create<FolderStore>()((set, get) => ({
       } else {
         set({ serviceStatus: "error" });
         throw new Error(data.detail || "Erreur lors du redémarrage");
+      }
+    } catch (error) {
+      set({ serviceStatus: "error" });
+      throw error;
+    }
+  },
+  resetService: async () => {
+    const { externalApiUrl } = get();
+    try {
+      set({ serviceStatus: "installing" }); // Show as installing/busy
+      const response = await fetch(`${externalApiUrl}/service/reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+
+      if (response.ok && data) {
+        set({ serviceStatus: "stopped" });
+      } else {
+        set({ serviceStatus: "error" });
+        throw new Error(data.detail || "Erreur lors de la réinitialisation");
       }
     } catch (error) {
       set({ serviceStatus: "error" });

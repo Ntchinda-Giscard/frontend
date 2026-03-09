@@ -21,6 +21,7 @@ export function ServiceControls() {
     stopService,
     installService,
     restartService,
+    resetService,
     getServiceStatus,
   } = useFolderStore();
   const { toast } = useToast();
@@ -116,6 +117,39 @@ export function ServiceControls() {
     }
   };
 
+  const handleReset = async () => {
+    if (
+      !confirm(
+        "Êtes-vous sûr de vouloir réinitialiser le service ? Cela arrêtera le service, le désinstallera et supprimera toutes les données locales.",
+      )
+    ) {
+      return;
+    }
+
+    toast({
+      title: "Réinitialisation en cours",
+      description: "Le service est en cours de réinitialisation...",
+    });
+
+    try {
+      await resetService();
+      toast({
+        title: "Service réinitialisé",
+        description: "Le service a été réinitialisé avec succès.",
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Une erreur inconnue s'est produite lors de la réinitialisation.";
+      toast({
+        title: "Erreur",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
+  };
+
   const getStatusBadge = () => {
     switch (serviceStatus) {
       case "running":
@@ -203,6 +237,15 @@ export function ServiceControls() {
           >
             <RotateCw className="mr-2 h-4 w-4" />
             Redémarrer
+          </Button>
+          <Button
+            onClick={handleReset}
+            variant="ghost"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            disabled={serviceStatus === "installing"}
+          >
+            <RotateCw className="mr-2 h-4 w-4" />
+            Réinitialiser
           </Button>
         </div>
       </CardContent>

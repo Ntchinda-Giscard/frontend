@@ -19,6 +19,7 @@ import { DatabaseConnectionForm } from "@/components/database-connection";
 import EmailForm from "@/components/email-form";
 import { useEffect } from "react";
 import SiteEmailConfig from "@/components/site-email-config";
+import { StatusBar } from "@/components/status-bar";
 
 export default function FolderPickerPage() {
   const {
@@ -60,7 +61,7 @@ export default function FolderPickerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-6 pb-12">
       <div className="mx-auto max-w-4xl space-y-6">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">
@@ -143,6 +144,7 @@ export default function FolderPickerPage() {
         </div>
       </div>
       <Toaster />
+      <StatusBar />
     </div>
   );
 }
